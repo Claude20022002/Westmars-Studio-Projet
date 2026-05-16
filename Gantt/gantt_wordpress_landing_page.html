@@ -1,0 +1,238 @@
+
+<style>
+h2.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+:root{
+  --ct-bg:#E1F5EE;--ct-bd:#1D9E75;--ct-fg:#085041;
+  --ca-bg:#FAEEDA;--ca-bd:#BA7517;--ca-fg:#633806;
+  --cb-bg:#E6F1FB;--cb-bd:#185FA5;--cb-fg:#0C447C;
+  --cc-bg:#FAECE7;--cc-bd:#993C1D;--cc-fg:#4A1B0C;
+  --cg-bg:#EAF3DE;--cg-bd:#3B6D11;--cg-fg:#173404;
+  --cm-bg:#F1EFE8;--cm-bd:#5F5E5A;--cm-fg:#2C2C2A;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --ct-bg:#04342C;--ct-bd:#1D9E75;--ct-fg:#9FE1CB;
+    --ca-bg:#412402;--ca-bd:#EF9F27;--ca-fg:#FAC775;
+    --cb-bg:#042C53;--cb-bd:#378ADD;--cb-fg:#B5D4F4;
+    --cc-bg:#4A1B0C;--cc-bd:#D85A30;--cc-fg:#F5C4B3;
+    --cg-bg:#173404;--cg-bd:#639922;--cg-fg:#C0DD97;
+    --cm-bg:#2C2C2A;--cm-bd:#888780;--cm-fg:#D3D1C7;
+  }
+}
+</style>
+
+<h2 class="sr-only">Diagramme de Gantt – Refonte landing page WordPress, 20 mai au 3 juillet 2026</h2>
+
+<div style="padding:1rem 0">
+
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:4px">
+    <div style="font-size:13px;font-weight:500;color:var(--color-text-primary);display:flex;align-items:center;gap:6px">
+      <i class="ti ti-calendar-stats" style="font-size:15px;vertical-align:-2px" aria-hidden="true"></i>
+      Diagramme de Gantt — Landing page WordPress
+    </div>
+    <div style="font-size:10px;color:var(--color-text-tertiary)">34 jours ouvrés · 255h de travail</div>
+  </div>
+  <div style="font-size:10px;color:var(--color-text-secondary);margin-bottom:14px;padding-left:1px">
+    <i class="ti ti-clock" style="font-size:11px;vertical-align:-1px" aria-hidden="true"></i>
+    &nbsp;20 mai – 3 juillet 2026 &nbsp;·&nbsp; 09h00 – 15h30 (7h30/jour)
+    &nbsp;·&nbsp; <span style="font-style:italic">Rapport rédigé en parallèle (~1h30/jour)</span>
+  </div>
+
+  <div style="overflow-x:auto">
+    <div id="g"></div>
+  </div>
+
+  <div id="leg" style="display:flex;flex-wrap:wrap;gap:5px 14px;margin-top:14px;font-size:10px;color:var(--color-text-secondary)"></div>
+
+  <div style="margin-top:10px;font-size:10px;color:var(--color-text-tertiary);display:flex;align-items:center;gap:4px">
+    <div style="width:14px;height:8px;border-radius:2px;border:1px dashed var(--cm-bd);opacity:0.7"></div>
+    Tâche en parallèle (rapport de stage, rédaction progressive)
+  </div>
+</div>
+
+<script>
+(function(){
+  const DW=13,LW=188;
+  const weeks=[
+    {l:'20–24 mai',n:5},{l:'27–31 mai',n:5},
+    {l:'2–6 juin',n:5},{l:'9–13 juin',n:5},
+    {l:'16–20 juin',n:5},{l:'23–27 juin',n:5},
+    {l:'30 jn–3 jl',n:4}
+  ];
+  const dn=['L','M','M','J','V'];
+  const wEnds=[];
+  weeks.forEach(w=>{for(let i=0;i<w.n;i++)wEnds.push(i===w.n-1)});
+  const TD=wEnds.length;
+
+  const phases=[
+    {id:'t',lb:'① Formation WordPress',ic:'ti-school',
+     tasks:[
+      {nm:'Installation locale & interface admin',s:1,e:3},
+      {nm:'Thèmes, plugins & personnalisation',s:4,e:6},
+      {nm:'Elementor / Gutenberg & exercices pratiques',s:7,e:10},
+    ]},
+    {id:'a',lb:'② Analyse & Conception',ic:'ti-pencil',
+     tasks:[
+      {nm:'Brief client, benchmark & arborescence',s:11,e:12},
+      {nm:'Wireframes & charte graphique',s:13,e:15},
+    ]},
+    {id:'b',lb:'③ Développement',ic:'ti-code',
+     tasks:[
+      {nm:'Configuration WordPress & thème',s:16,e:17},
+      {nm:'Sections Hero & À propos',s:18,e:20},
+      {nm:'Sections Services & Portfolio',s:21,e:23},
+      {nm:'Sections Contact & Footer',s:24,e:25},
+      {nm:'Intégration du contenu & SEO de base',s:26,e:27},
+    ]},
+    {id:'c',lb:'④ Tests & Recette',ic:'ti-bug',
+     tasks:[
+      {nm:'Tests navigateurs & responsive',s:28,e:29},
+      {nm:'Corrections & optimisation performances',s:30,e:30},
+    ]},
+    {id:'g',lb:'⑤ Livraison',ic:'ti-rocket',
+     tasks:[
+      {nm:'Mise en production & documentation',s:31,e:32},
+      {nm:'Présentation & remise finale',s:33,e:34},
+    ]},
+    {id:'m',lb:'✎ Rapport de stage',ic:'ti-file-description',
+     tasks:[
+      {nm:'Partie 1 — Contexte & formation',s:11,e:20,dash:1},
+      {nm:'Partie 2 — Développement & analyses',s:21,e:30,dash:1},
+      {nm:'Partie 3 — Finalisation & relecture',s:31,e:34},
+    ]},
+  ];
+
+  function px(d){return(d-1)*DW;}
+
+  function grid(parent){
+    wEnds.forEach(isEnd=>{
+      const c=document.createElement('div');
+      c.style.cssText=`width:${DW}px;height:100%;flex-shrink:0;border-right:${isEnd?'1px solid var(--color-border-secondary)':'0.5px solid var(--color-border-tertiary)'}`;
+      parent.appendChild(c);
+    });
+  }
+
+  const g=document.getElementById('g');
+
+  // Header row
+  const hdr=document.createElement('div');
+  hdr.style.cssText=`display:flex;margin-left:${LW}px;margin-bottom:3px`;
+  weeks.forEach(w=>{
+    const ww=w.n*DW;
+    const wg=document.createElement('div');
+    wg.style.cssText=`width:${ww}px;flex-shrink:0`;
+    const lbl=document.createElement('div');
+    lbl.textContent=w.l;
+    lbl.style.cssText='font-size:9px;font-weight:500;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-secondary);text-align:center;padding-bottom:2px;margin-bottom:2px';
+    wg.appendChild(lbl);
+    const dr=document.createElement('div');
+    dr.style.cssText='display:flex';
+    for(let i=0;i<w.n;i++){
+      const d=document.createElement('div');
+      d.textContent=dn[i];
+      d.style.cssText=`width:${DW}px;text-align:center;font-size:9px;color:var(--color-text-tertiary)`;
+      dr.appendChild(d);
+    }
+    wg.appendChild(dr);
+    hdr.appendChild(wg);
+  });
+  g.appendChild(hdr);
+
+  // Phases
+  phases.forEach(ph=>{
+    // Phase header row
+    const phr=document.createElement('div');
+    phr.style.cssText='display:flex;align-items:center;height:22px;margin-top:7px';
+    const phl=document.createElement('div');
+    phl.innerHTML=`<i class="ti ${ph.ic}" style="font-size:12px;vertical-align:-2px;margin-right:4px;color:var(--c${ph.id}-bd)" aria-hidden="true"></i>${ph.lb}`;
+    phl.style.cssText=`width:${LW}px;flex-shrink:0;font-size:11px;font-weight:500;color:var(--color-text-primary)`;
+    const pline=document.createElement('div');
+    pline.style.cssText=`width:${TD*DW}px;height:0.5px;background:var(--c${ph.id}-bd);opacity:0.3`;
+    phr.appendChild(phl); phr.appendChild(pline);
+    g.appendChild(phr);
+
+    // Task rows
+    ph.tasks.forEach(task=>{
+      const row=document.createElement('div');
+      row.style.cssText='display:flex;align-items:center;height:26px;border-bottom:0.5px solid var(--color-border-tertiary)';
+      row.addEventListener('mouseenter',()=>row.style.background='var(--color-background-secondary)');
+      row.addEventListener('mouseleave',()=>row.style.background='');
+
+      const lbl=document.createElement('div');
+      lbl.textContent=task.nm;
+      lbl.style.cssText=`width:${LW}px;flex-shrink:0;padding-right:8px;color:var(--color-text-secondary);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis`;
+
+      const trk=document.createElement('div');
+      trk.style.cssText=`position:relative;width:${TD*DW}px;height:100%;display:flex;align-items:center`;
+
+      const gd=document.createElement('div');
+      gd.style.cssText='position:absolute;top:0;left:0;right:0;bottom:0;display:flex';
+      grid(gd); trk.appendChild(gd);
+
+      const bar=document.createElement('div');
+      const bl=px(task.s);
+      const bw=(task.e-task.s+1)*DW-2;
+
+      if(task.dash){
+        bar.style.cssText=`position:absolute;left:${bl}px;width:${bw}px;height:16px;border-radius:3px;background:var(--c${ph.id}-bg);border:1px dashed var(--c${ph.id}-bd);opacity:0.75`;
+      } else {
+        bar.style.cssText=`position:absolute;left:${bl}px;width:${bw}px;height:16px;border-radius:3px;background:var(--c${ph.id}-bg);border:0.5px solid var(--c${ph.id}-bd)`;
+      }
+
+      trk.appendChild(bar);
+      row.appendChild(lbl); row.appendChild(trk);
+      g.appendChild(row);
+    });
+  });
+
+  // Stats summary row
+  const statsRow=document.createElement('div');
+  statsRow.style.cssText=`display:flex;margin-top:10px;margin-left:${LW}px;gap:4px`;
+  const milestones=[
+    {day:10,lbl:'Fin formation',col:'var(--ct-bd)'},
+    {day:15,lbl:'Fin conception',col:'var(--ca-bd)'},
+    {day:27,lbl:'Fin dev.',col:'var(--cb-bd)'},
+    {day:30,lbl:'Fin tests',col:'var(--cc-bd)'},
+    {day:34,lbl:'Livraison',col:'var(--cg-bd)'},
+  ];
+  milestones.forEach(m=>{
+    const ms=document.createElement('div');
+    ms.style.cssText=`position:relative;`;
+    ms.innerHTML=`<div style="position:absolute;left:${px(m.day)+DW-1}px;width:1px;height:6px;background:${m.col};top:0"></div><div style="position:absolute;left:${px(m.day)+DW-1-24}px;width:50px;top:8px;font-size:8px;text-align:center;color:${m.col};font-weight:500;line-height:1.2">${m.lbl}</div>`;
+    statsRow.appendChild(ms);
+  });
+  const msTrack=document.createElement('div');
+  msTrack.style.cssText=`position:relative;width:${TD*DW}px;height:22px`;
+  wEnds.forEach((isEnd,i)=>{
+    if(isEnd){
+      const sep=document.createElement('div');
+      sep.style.cssText=`position:absolute;left:${(i+1)*DW}px;top:0;width:0.5px;height:100%;background:var(--color-border-tertiary)`;
+      msTrack.appendChild(sep);
+    }
+  });
+  milestones.forEach(m=>{
+    const tick=document.createElement('div');
+    const xl=(m.day)*DW-1;
+    tick.style.cssText=`position:absolute;left:${xl}px;top:0;display:flex;flex-direction:column;align-items:center;gap:2px`;
+    tick.innerHTML=`<div style="width:1px;height:7px;background:${m.col}"></div><div style="font-size:8px;font-weight:500;color:${m.col};white-space:nowrap;line-height:1.1;text-align:center">${m.lbl}</div>`;
+    msTrack.appendChild(tick);
+  });
+  const mainStatRow=document.createElement('div');
+  mainStatRow.style.cssText=`display:flex;margin-top:4px`;
+  const statLbl=document.createElement('div');
+  statLbl.style.cssText=`width:${LW}px;flex-shrink:0;font-size:9px;color:var(--color-text-tertiary);display:flex;align-items:flex-start;padding-top:2px`;
+  statLbl.textContent='Jalons clés';
+  mainStatRow.appendChild(statLbl);
+  mainStatRow.appendChild(msTrack);
+  g.appendChild(mainStatRow);
+
+  // Legend
+  const leg=document.getElementById('leg');
+  phases.forEach(ph=>{
+    const item=document.createElement('div');
+    item.style.cssText='display:flex;align-items:center;gap:4px';
+    item.innerHTML=`<div style="width:10px;height:10px;border-radius:2px;background:var(--c${ph.id}-bg);border:0.5px solid var(--c${ph.id}-bd)"></div><span>${ph.lb}</span>`;
+    leg.appendChild(item);
+  });
+})();
+</script>
